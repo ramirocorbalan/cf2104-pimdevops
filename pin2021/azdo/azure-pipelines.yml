@@ -11,5 +11,5 @@ trigger:
   - task: KubernetesManifest@0
     inputs:
       action: 'deploy'
-      kubernetesServiceConnection: 'eks-mundos-e-2'
+      kubernetesServiceConnection: 'ado'
       manifests: 'nginx-deployment.yaml'

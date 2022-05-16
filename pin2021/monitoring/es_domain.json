@@ -1,7 +1,7 @@
 {
-    "DomainName": "${ES_DOMAIN_NAME}",
-    "ElasticSearchVersion": "${ES_VERSION}",
-    "ElasticSearchClusterConfig": {
+    "DomainName": "eksworkshop-logging",
+    "ElasticsearchVersion": "7.4",
+    "ElasticsearchClusterConfig": {
         "InstanceType": "r5.large.elasticsearch",
         "InstanceCount": 1,
             "DedicatedMasterEnabled": false,
@@ -13,7 +13,7 @@
         "VolumeType": "gp2",
         "VolumeSize": 100
     },
-    "AccessPolicies":  "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"es:ESHttp*\",\"Resource\":\"arn:aws:es:${AWS_REGION}:${ACCOUNT_ID}:domain/${ES_DOMAIN_NAME}/*\"}]}",
+    "AccessPolicies":  "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"es:ESHttp*\",\"Resource\":\"arn:aws:es:us-east-2:279445133194:domain/eksworkshop-logging/*\"}]}",
     "SnapshotOptions": {},
     "CognitoOptions": {
         "Enabled": false
@@ -37,3 +37,22 @@
         }
     }
 }
+
+
+ElasticsearchVersion, ElasticsearchClusterConfig
+
+
+create-elasticsearch-domain --domain-name ${ES_DOMAIN_NAME} --elasticsearch-version ${ES_VERSION} --elasticsearch-cluster-config InstanceType=r5.large.elasticsearch,InstanceCount=1,DedicatedMasterEnabled=false,ZoneAwarenessEnabled=false --ebs-options EBSEnabled=true,VolumeType=gp2,VolumeSize=100 --access-policies {\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"es:ESHttp*\",\"Resource\":\"arn:aws:es:${AWS_REGION}:${ACCOUNT_ID}:domain/${ES_DOMAIN_NAME}/*\"}]} --cognito-options Enabled=false --encryption-at-rest-options Enabled=true --node-to-node-encryption-options Enabled: true --domain-endpoint-options EnforceHTTPS=boolean,TLSSecurityPolicy="Policy-Min-TLS-1-0-2019-07" --advanced-security-options Enabled=true,InternalUserDatabaseEnabled=true,MasterUserOptions={MasterUserName=${ES_DOMAIN_USER},MasterUserPassword=${ES_DOMAIN_PASSWORD}}
+
+    aws opensearch create-domain --domain-name mylogs --engine-version OpenSearch_1.0 --cluster-config  InstanceType=r6g.large.search,InstanceCount=2 --ebs-options EBSEnabled=true,VolumeType=gp2,VolumeSize=100 --access-policies '{"Version": "2012-10-17", "Statement": [{"Action": "es:*", "Principal":"*","Effect": "Allow", "Condition": {"IpAddress":{"aws:SourceIp":["192.0.2.0/32"]}}}]}'
+
+"AdvancedSecurityOptions": {
+    "Enabled": true,
+    "InternalUserDatabaseEnabled": true,
+    "MasterUserOptions": {
+        "MasterUserName": "${ES_DOMAIN_USER}",
+        "MasterUserPassword": "${ES_DOMAIN_PASSWORD}"
+    }
+}
+
+Enabled=true,InternalUserDatabaseEnabled=true,MasterUserOptions={MasterUserName=${ES_DOMAIN_USER},MasterUserPassword=${ES_DOMAIN_PASSWORD}}
