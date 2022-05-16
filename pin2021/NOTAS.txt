@@ -17,6 +17,7 @@ eksctl get iamidentitymapping --cluster eks-mundos-e --region=us-east-2
 
 eksctl create iamidentitymapping --cluster eks-mundos-e --region=us-east-2 --arn arn:aws:iam::279445133194:user/ramiromundose --group system:masters --no-duplicate-arns
 
+eksctl utils associate-iam-oidc-provider --cluster eks-mundos-e --approve
 
 
 #secret para azdo
@@ -79,3 +80,43 @@ tput setaf 2; echo "The Elasticsearch cluster is ready"
 else
 tput setaf 1;echo "The Elasticsearch cluster is NOT ready"
 fi
+
+
+#PARA BORRAR TODO
+
+kubectl delete -f ~/environment/logging/fluentbit.yaml
+
+aws es delete-elasticsearch-domain \
+--domain-name eksworkshop-logging
+
+eksctl delete iamserviceaccount \
+--name fluent-bit \
+--namespace logging \
+--cluster eks-mundos-e \
+--wait
+
+aws iam delete-policy \
+--policy-arn "arn:aws:iam::279445133194:policy/fluent-bit-policy"
+
+kubectl delete namespace logging
+
+unset ES_DOMAIN_NAME
+unset ES_VERSION
+unset ES_DOMAIN_USER
+unset ES_DOMAIN_PASSWORD
+unset FLUENTBIT_ROLE
+unset ES_ENDPOINT
+
+#BORRAR PROMETEUS Y GRAFANA (no lo probe)
+helm uninstall prometheus --namespace prometheus
+
+kubectl delete ns prometheus
+
+helm uninstall grafana --namespace grafana
+
+kubectl delete ns grafana
+
+rm -rf ${HOME}/environment/grafana
+
+#BORRAR CLUSTER EKS
+eksctl delete cluster --name eks-mundos-e
