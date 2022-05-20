@@ -12,4 +12,4 @@ trigger:
     inputs:
       action: 'deploy'
       kubernetesServiceConnection: 'ado'
-      manifests: 'nginx-deployment.yaml'
+      manifests: 'azdo/nginx-deployment.yaml'
